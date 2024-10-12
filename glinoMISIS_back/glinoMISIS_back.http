@@ -1,0 +1,6 @@
+@glinoMISIS_back_HostAddress = http://localhost:5191
+
+GET {{glinoMISIS_back_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
