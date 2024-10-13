@@ -10,5 +10,6 @@ namespace DataAccess
 
         }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Compartment> Compartments { get; set; }
     }
 }

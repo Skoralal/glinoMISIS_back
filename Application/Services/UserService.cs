@@ -35,13 +35,30 @@ namespace Application.Services
         public async Task<string> Login(string login, string password)
         {
             var employee = await GetByLogin(login);
+            if (employee == null)
+            {
+                return "Wrong login or password";
+            }
             var aboba = _passwordHasher.Verify(password, employee.HashedPassword);
             if (!aboba)
             {
-                return "";
+                return "Wrong login or password";
             }
             var token = _jwtProvider.GenerateToken(employee);
             return token;
+        }
+
+        public async Task<List<Compartment>> GetAllCompartments()
+        {
+            var aboba = await _context.Compartments.AsNoTracking().ToListAsync();
+            return aboba;
+        }
+
+        public async Task<bool> AddCompartment(Compartment compartment)
+        {
+            await _context.Compartments.AddAsync(compartment);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

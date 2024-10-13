@@ -8,5 +8,7 @@ namespace Application.Services
         Task<Employee?> GetByLogin(string login);
         Task<string> Login(string login, string password);
         Task Register(Employee employee, string password);
+        Task <List<Compartment>> GetAllCompartments();
+        Task<bool> AddCompartment(Compartment compartment);
     }
 }
