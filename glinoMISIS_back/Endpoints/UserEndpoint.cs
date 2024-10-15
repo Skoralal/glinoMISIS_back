@@ -1,8 +1,10 @@
 ﻿using Application.Services;
 using Core.Models;
 using glinoMISIS_back.Contracts.Users;
+using glinoMISIS_back.Extentions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Text.Json;
 
 namespace glinoMISIS_back.Endpoints
 {
@@ -12,20 +14,38 @@ namespace glinoMISIS_back.Endpoints
         {
             builder.MapPost("Register", Register);
             builder.MapPost("Login", Login);
-            builder.MapGet("GetCompartments", GetCompartments);
+            builder.MapGet("GetCompartments", GetCompartments).RequireAuthorization();
             builder.MapPost("AddCompartment", AddCompartment);
+            builder.MapGet("GetAuthEmployee", GetAuthEmployee);
             return builder;
         }
-        public static async Task<IResult> Register(UserService userService, RegisterRequest request)
+        public static async Task<IResult> Register(UserService userService, RegisterRequest request, HttpContext context)
         {
             await userService.Register(request.Employee, request.password);
-            return await Login(new() { login = request.Employee.Login, password = request.password}, userService);
+            return await Login(new() { login = request.Employee.Login, password = request.password}, userService, context);
             
         }
-        public static async Task<IResult> Login( LoginRequest loginRequest, UserService userService)
+        public static async Task<IResult> Login( LoginRequest loginRequest, UserService userService, HttpContext context)
         {
             var token = await userService.Login(loginRequest.login, loginRequest.password);
+            context.Response.Cookies.Append("notjwttoken", token);
+            
             return Results.Ok(token);
+        }
+        public static async Task<IResult> GetAuthEmployee(UserService userService, HttpContext context)
+        {
+            if (context.Request.Cookies.ContainsKey("notjwttoken"))
+            {
+                var cock = context.Request.Cookies["notjwttoken"];
+                string aboba = ApiExtentions.DecipherJWT(cock!);
+                PrivateEmployee employee = await userService.GetPrivateByLogin(aboba);
+                string json = JsonSerializer.Serialize(employee, options: new() { WriteIndented = true});
+                return Results.Ok(json);
+            }
+            else
+            {
+                return Results.Unauthorized();
+            }
         }
         public static async Task<IResult> GetCompartments(UserService userService)
         {

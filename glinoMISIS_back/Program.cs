@@ -3,6 +3,7 @@ using Application.Services;
 using DataAccess;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using glinoMISIS_back.Extentions;
 
 namespace glinoMISIS_back
 {
@@ -22,6 +23,9 @@ namespace glinoMISIS_back
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IJWTProvider, JWTProvider>();
             builder.Services.AddScoped<UserService>();
+
+            ApiExtentions.AddApiAuth(builder.Services);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -32,7 +36,7 @@ namespace glinoMISIS_back
             }
             
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

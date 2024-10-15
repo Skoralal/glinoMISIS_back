@@ -32,6 +32,12 @@ namespace Application.Services
             var aboba = await _context.Employees.FindAsync(login);
             return aboba;
         }
+        public async Task<PrivateEmployee?> GetPrivateByLogin(string login)
+        {
+            Employee aboba = await _context.Employees.FindAsync(login);
+            var shmee = aboba as PrivateEmployee;
+            return shmee;
+        }
         public async Task<string> Login(string login, string password)
         {
             var employee = await GetByLogin(login);
