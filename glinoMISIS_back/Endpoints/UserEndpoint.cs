@@ -17,6 +17,7 @@ namespace glinoMISIS_back.Endpoints
             builder.MapGet("GetCompartments", GetCompartments).RequireAuthorization();
             builder.MapPost("AddCompartment", AddCompartment);
             builder.MapGet("GetAuthEmployee", GetAuthEmployee);
+            builder.MapGet("GetPublicEmployee", GetPublicEmployee);
             return builder;
         }
         public static async Task<IResult> Register(UserService userService, RegisterRequest request, HttpContext context)
@@ -46,6 +47,12 @@ namespace glinoMISIS_back.Endpoints
             {
                 return Results.Unauthorized();
             }
+        }
+        public static async Task<IResult> GetPublicEmployee(UserService userService, HttpContext context, [FromQuery] string login)
+        {
+            PublicEmployee employee = await userService.GetPublicByLogin(login);
+            string json = JsonSerializer.Serialize(employee, options: new() { WriteIndented = true });
+            return Results.Ok(json);
         }
         public static async Task<IResult> GetCompartments(UserService userService)
         {

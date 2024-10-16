@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace Core.Models
 {
-    public class Skill
+    public class HardSkill : Skill
     {
-        public string Description { get; set; } = "no Description";
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Group { get; set; } = "Hard";
+
     }
 }

@@ -80,6 +80,30 @@ namespace glinoMISIS_back.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Core.Models.HardSkill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployeeLogin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeLogin");
+
+                    b.ToTable("HardSkill");
+                });
+
             modelBuilder.Entity("Core.Models.Notification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -106,8 +130,9 @@ namespace glinoMISIS_back.Migrations
 
             modelBuilder.Entity("Core.Models.PlaceOfWork", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -129,6 +154,37 @@ namespace glinoMISIS_back.Migrations
                     b.ToTable("PlaceOfWork");
                 });
 
+            modelBuilder.Entity("Core.Models.SoftSkill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployeeLogin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeLogin");
+
+                    b.ToTable("SoftSkill");
+                });
+
+            modelBuilder.Entity("Core.Models.HardSkill", b =>
+                {
+                    b.HasOne("Core.Models.Employee", null)
+                        .WithMany("HardSkillSet")
+                        .HasForeignKey("EmployeeLogin");
+                });
+
             modelBuilder.Entity("Core.Models.Notification", b =>
                 {
                     b.HasOne("Core.Models.Employee", null)
@@ -143,11 +199,22 @@ namespace glinoMISIS_back.Migrations
                         .HasForeignKey("EmployeeLogin");
                 });
 
+            modelBuilder.Entity("Core.Models.SoftSkill", b =>
+                {
+                    b.HasOne("Core.Models.Employee", null)
+                        .WithMany("SoftSkillSet")
+                        .HasForeignKey("EmployeeLogin");
+                });
+
             modelBuilder.Entity("Core.Models.Employee", b =>
                 {
+                    b.Navigation("HardSkillSet");
+
                     b.Navigation("Notifications");
 
                     b.Navigation("PreviousPositions");
+
+                    b.Navigation("SoftSkillSet");
                 });
 #pragma warning restore 612, 618
         }

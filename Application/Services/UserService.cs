@@ -38,6 +38,12 @@ namespace Application.Services
             var shmee = aboba as PrivateEmployee;
             return shmee;
         }
+        public async Task<PublicEmployee?> GetPublicByLogin(string login)
+        {
+            Employee aboba = await _context.Employees.FindAsync(login);
+            var shmee = aboba as PublicEmployee;
+            return shmee;
+        }
         public async Task<string> Login(string login, string password)
         {
             var employee = await GetByLogin(login);
