@@ -12,5 +12,7 @@ namespace Application.Services
         Task Register(Employee employee, string password);
         Task <List<Compartment>> GetAllCompartments();
         Task<bool> AddCompartment(Compartment compartment);
+        Task<List<PublicEmployee>> GetFellasFromCompartment(int compartmentID);
+        Task<bool> UpdateEmployee(Employee employee);
     }
 }

@@ -18,13 +18,14 @@ namespace glinoMISIS_back.Endpoints
             builder.MapPost("AddCompartment", AddCompartment);
             builder.MapGet("GetAuthEmployee", GetAuthEmployee);
             builder.MapGet("GetPublicEmployee", GetPublicEmployee);
+            builder.MapGet("GetFellas", GetFellas);
+            builder.MapPost("UpdateMyself", UpdateMyself);
             return builder;
         }
         public static async Task<IResult> Register(UserService userService, RegisterRequest request, HttpContext context)
         {
             await userService.Register(request.Employee, request.password);
             return await Login(new() { login = request.Employee.Login, password = request.password}, userService, context);
-            
         }
         public static async Task<IResult> Login( LoginRequest loginRequest, UserService userService, HttpContext context)
         {
@@ -40,7 +41,7 @@ namespace glinoMISIS_back.Endpoints
                 var cock = context.Request.Cookies["notjwttoken"];
                 string aboba = ApiExtentions.DecipherJWT(cock!);
                 PrivateEmployee employee = await userService.GetPrivateByLogin(aboba);
-                string json = JsonSerializer.Serialize(employee, options: new() { WriteIndented = true});
+                string json = JsonSerializer.Serialize(employee);
                 return Results.Ok(json);
             }
             else
@@ -51,7 +52,7 @@ namespace glinoMISIS_back.Endpoints
         public static async Task<IResult> GetPublicEmployee(UserService userService, HttpContext context, [FromQuery] string login)
         {
             PublicEmployee employee = await userService.GetPublicByLogin(login);
-            string json = JsonSerializer.Serialize(employee, options: new() { WriteIndented = true });
+            string json = JsonSerializer.Serialize(employee);
             return Results.Ok(json);
         }
         public static async Task<IResult> GetCompartments(UserService userService)
@@ -63,6 +64,43 @@ namespace glinoMISIS_back.Endpoints
         {
             await userService.AddCompartment(compartment);
             return Results.Ok();
+        }
+        public static async Task<IResult> UpdateMyself([FromBody] Employee employee, UserService userService, HttpContext context)
+        {
+            
+            if (context.Request.Cookies.ContainsKey("notjwttoken"))
+            {
+                var cock = context.Request.Cookies["notjwttoken"];
+                string aboba = ApiExtentions.DecipherJWT(cock!);
+                employee.Login = aboba;
+                var result = await userService.UpdateEmployee(employee);
+                if (result)
+                {
+                    return Results.Ok(result);
+
+                }
+                return Results.Unauthorized();
+            }
+            else
+            {
+                return Results.Unauthorized();
+            }
+        }
+        public static async Task<IResult> GetFellas(UserService userService, HttpContext context)
+        {
+            if (context.Request.Cookies.ContainsKey("notjwttoken"))
+            {
+                var cock = context.Request.Cookies["notjwttoken"];
+                string aboba = ApiExtentions.DecipherJWT(cock!);
+                PrivateEmployee employee = await userService.GetPrivateByLogin(aboba);
+                int compartmentID = employee.CurrentConpartmentID;
+                List<PublicEmployee> querry = await userService.GetFellasFromCompartment(compartmentID);
+                return Results.Ok(JsonSerializer.Serialize(querry));
+            }
+            else
+            {
+                return Results.Unauthorized();
+            }
         }
     }
 }

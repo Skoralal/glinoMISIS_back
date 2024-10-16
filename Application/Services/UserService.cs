@@ -72,5 +72,33 @@ namespace Application.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<PublicEmployee>> GetFellasFromCompartment(int compartmentID)
+        {
+            List<PublicEmployee> list = await _context.Employees.AsNoTracking().Where(x=>x.CurrentConpartmentID == compartmentID).Select(x=>x as PublicEmployee).ToListAsync();
+            return list;
+        }
+
+        public async Task<bool> UpdateEmployee(Employee employee)
+        {
+            try
+            {
+                var register = await GetByLogin(employee.Login);
+                register.Wallet = employee.Wallet;
+                register.SoftSkillSet = employee.SoftSkillSet;
+                register.HardSkillSet = employee.HardSkillSet;
+                register.PreviousPositions = employee.PreviousPositions;
+                register.Certificates = employee.Certificates;
+                register.Notifications = employee.Notifications;
+                register.CurrentConpartmentID = employee.CurrentConpartmentID;
+                register.Name = employee.Name;
+                register.MiddleName = employee.MiddleName;
+                register.LastName = employee.LastName;
+                register.Photo = employee.Photo;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch {  return false; }
+        }
     }
 }
