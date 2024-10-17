@@ -100,5 +100,17 @@ namespace Application.Services
             }
             catch {  return false; }
         }
+
+        public async Task<bool> UpdateProfilePic(string employeeLogin, string picPath)
+        {
+            try
+            {
+                var register = await GetByLogin(employeeLogin);
+                register.Photo = picPath;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch { return false; }
+        }
     }
 }

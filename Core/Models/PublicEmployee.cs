@@ -11,6 +11,7 @@ namespace Core.Models
         public string Name { get; set; } = "No Name";
         public string MiddleName { get; set; } = "No Middle Name";
         public string LastName { get; set; } = "No Last Name";
+        public long BirthDay { get; set; } = 0;
         public string Position { get; set; } = "";
         //private List<PlaceOfWork> _PreviousPositions = new();
         //public List<PlaceOfWork> PreviousPositions

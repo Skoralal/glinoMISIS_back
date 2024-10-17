@@ -14,5 +14,6 @@ namespace Application.Services
         Task<bool> AddCompartment(Compartment compartment);
         Task<List<PublicEmployee>> GetFellasFromCompartment(int compartmentID);
         Task<bool> UpdateEmployee(Employee employee);
+        Task<bool> UpdateProfilePic(string employeeLogin, string picPath);
     }
 }
