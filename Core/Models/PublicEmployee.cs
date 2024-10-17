@@ -29,7 +29,7 @@ namespace Core.Models
         public int CurrentConpartmentID { get; set; } = 0;
         public string Photo { get; set; } = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Hitler_portrait_crop.jpg/274px-Hitler_portrait_crop.jpg";
         public List<string> Certificates { get; set; } = new();
-        public string Wallet = "";
+        public string Wallet { get; set; } = "";
         public List<HardSkill> HardSkillSet { get; set; } = new();
         public List<SoftSkill> SoftSkillSet { get; set; } = new();
     }
