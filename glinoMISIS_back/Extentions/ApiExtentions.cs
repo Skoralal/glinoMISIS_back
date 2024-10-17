@@ -40,7 +40,7 @@ namespace glinoMISIS_back.Extentions
                 });
             services.AddAuthorization();
         }
-        public static string DecipherJWT(string token)
+        public static string? DecipherJWT(string token)
         {
             try
             {
@@ -55,11 +55,11 @@ namespace glinoMISIS_back.Extentions
             }
             catch (SecurityTokenExpiredException)
             {
-                return "Token has expired";
+                return null;
             }
             catch (Exception)
             {
-                return "Token is invalid";
+                return null;
             }
         }
     }

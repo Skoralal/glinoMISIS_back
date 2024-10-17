@@ -40,6 +40,10 @@ namespace glinoMISIS_back.Endpoints
             {
                 var cock = context.Request.Cookies["notjwttoken"];
                 string aboba = ApiExtentions.DecipherJWT(cock!);
+                if(aboba == null)
+                {
+                    return Results.Unauthorized();
+                }
                 PrivateEmployee employee = await userService.GetPrivateByLogin(aboba);
                 string json = JsonSerializer.Serialize(employee);
                 return Results.Ok(json);
