@@ -44,17 +44,17 @@ namespace Application.Services
             var shmee = aboba as PublicEmployee;
             return shmee;
         }
-        public async Task<string> Login(string login, string password)
+        public async Task<string?> Login(string login, string password)
         {
             var employee = await GetByLogin(login);
             if (employee == null)
             {
-                return "Wrong login or password";
+                return null;
             }
             var aboba = _passwordHasher.Verify(password, employee.HashedPassword);
             if (!aboba)
             {
-                return "Wrong login or password";
+                return null;
             }
             var token = _jwtProvider.GenerateToken(employee);
             return token;
@@ -111,6 +111,11 @@ namespace Application.Services
                 return true;
             }
             catch { return false; }
+        }
+        public List<PublicEmployee> GetAllPublic()
+        {
+            var aboba = _context.Employees.AsNoTracking().Select(x=>x as PublicEmployee).ToList();
+            return aboba;
         }
     }
 }

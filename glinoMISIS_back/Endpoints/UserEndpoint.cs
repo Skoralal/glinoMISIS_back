@@ -21,6 +21,7 @@ namespace glinoMISIS_back.Endpoints
             builder.MapGet("GetFellas", GetFellas);
             builder.MapPost("UpdateMyself", UpdateMyself);
             builder.MapPost("UpdateProfilePic", UpdateProfilePic);
+            builder.MapGet("GetAllPublic", GetAllPublic);
             return builder;
         }
         public static async Task<IResult> Register(UserService userService, RegisterRequest request, HttpContext context)
@@ -31,6 +32,10 @@ namespace glinoMISIS_back.Endpoints
         public static async Task<IResult> Login( LoginRequest loginRequest, UserService userService, HttpContext context)
         {
             var token = await userService.Login(loginRequest.login, loginRequest.password);
+            if (token == null)
+            {
+                return Results.BadRequest("Wrong login or password");
+            }
             context.Response.Cookies.Append("notjwttoken", token);
             
             return Results.Ok(token);
@@ -160,6 +165,11 @@ namespace glinoMISIS_back.Endpoints
             {
                 return Results.Unauthorized();
             }
+        }
+        public static IResult GetAllPublic(UserService userService)
+        {
+            var aboba = userService.GetAllPublic();
+            return Results.Ok(JsonSerializer.Serialize(aboba));
         }
     }
 }
